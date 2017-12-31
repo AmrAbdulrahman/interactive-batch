@@ -1,0 +1,27 @@
+{
+  "name": "interactive-batch",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "bin": {
+    "ib": "bin/ib",
+    "interactive-batch": "bin/interactive-batch"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AmrAbdulrahman/interactive-batch.git"
+  },
+  "author": "Amr Abdulrahman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AmrAbdulrahman/interactive-batch/issues"
+  },
+  "homepage": "https://github.com/AmrAbdulrahman/interactive-batch#readme",
+  "dependencies": {
+    "lodash": "^4.17.4",
+    "yargs": "^10.0.3"
+  }
+}
