@@ -19,7 +19,7 @@ function run() {
   });
 
   Engine.exec(commands)
-    .then(() => Logger.success('Success!'))
+    .then(() => Logger.success('\nSUCCESS!'))
     .catch(ex => Logger.error(ex, `\n${ex.stack}`));
 }
 

@@ -8,7 +8,7 @@ const isExecutable = require('../Utils/isExecutable');
 
 module.exports = class Engine {
   static exec(something) {
-    let defer = new Defer();
+    const defer = new Defer();
     let promise = null;
 
     if (isString(something) === true) {
@@ -39,14 +39,14 @@ module.exports = class Engine {
   }
 
   static execArray(array) {
-    let defer = new Defer();
+    const defer = new Defer();
 
     var roll = (index = 0) => {
       if (index >= array.length) {
         return defer.resolve();
       }
 
-      let something = array[index];
+      const something = array[index];
 
       this.exec(something)
         .then(() => roll(index + 1))
@@ -115,6 +115,7 @@ module.exports = class Engine {
   }
 
   static logExecutionMessage(message) {
-    Logger.log(`\n> ${message}`.magenta());
+    Logger.separator();
+    Logger.log(`> ${message}`.magenta());
   }
 };

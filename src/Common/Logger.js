@@ -5,6 +5,7 @@ class Logger {
     this.levelChar = ' ';
     this.level = 0;
     this.levelSize = 4;
+    this.maxLineLength = 80;
   }
 
   static makeArg(arg) {
@@ -66,16 +67,25 @@ class Logger {
     this.log(txt.magenta().bold());
   }
 
+  static separator() {
+    const separatorLine = repeat('.', this.maxLineLength - this.spacing());
+    this.log(`\n${separatorLine}`.magenta());
+  }
+
   static addLevel() {
-    this.level += this.levelSize;
+    this.level ++;
   }
 
   static removeLevel() {
-    this.level -= this.levelSize;
+    this.level --;
+  }
+
+  static spacing() {
+    return this.level * this.levelSize;
   }
 
   static levelSpacing() {
-    return repeat(this.levelChar, this.level);
+    return repeat(this.levelChar, this.spacing());
   }
 }
 
