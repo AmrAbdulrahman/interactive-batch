@@ -7,37 +7,34 @@ const askQuestion = require('../Utils/askQuestion');
 const Condition = require('./Condition');
 
 module.exports = class QuestionEntry {
-  constructor({condition, arg, question, helpText, choices,
-    defaultAnswer, then, onYes, onNo, required}) {
-
-    this.condition = condition ? new Condition(condition) : null;
-    this.arg = arg;
+  constructor(question) {
     this.question = question;
-    this.helpText = helpText;
-    this.choices = choices;
-    this.defaultAnswer = defaultAnswer;
-    this.then = then;
-    this.onYes = onYes;
-    this.onNo = onNo;
-    this.required = isUndefined(required) ? true : required;
+
+    this.question.condition = question.condition ? new Condition(question.condition) : null;
+    this.question.required = isUndefined(question.required) ? true : question.required;
   }
 
   exec() {
+    const question = this.question;
+
     // no condition or it fullfils
-    if (!this.condition || this.condition.value() === true) {
+    if (!question.condition || question.condition.value() === true) {
       const defer = new Defer();
-      let result = [];
+      const result = [];
 
       this
         .ask()
-        .then(() => this.then ? result.push(this.then) : null)
         .then(() => {
-          if (this.onYes && Args.isYes(this.arg)) {
-            result.push(this.onYes);
+          if (question.then) {
+            result.push(question.then);
           }
 
-          if (this.onNo && Args.isNo(this.arg)) {
-            result.push(this.onNo);
+          if (question.onYes && Args.isYes(question.arg)) {
+            result.push(question.onYes);
+          }
+
+          if (question.onNo && Args.isNo(question.arg)) {
+            result.push(question.onNo);
           }
         })
         .then(() => defer.resolve(result))
@@ -46,23 +43,16 @@ module.exports = class QuestionEntry {
       return defer.promise;
     }
 
-    Logger.warn(`Skipping conditional question [${this.arg}]`);
+    Logger.warn(`Skipping conditional question [${question.arg}]`);
     return Promise.resolve(true);
   }
 
   ask() {
-    return askQuestion({
-      arg: this.arg,
-      question: this.question,
-      helpText: this.helpText,
-      choices: this.choices,
-      defaultAnswer: this.defaultAnswer,
-      required: this.required,
-    });
+    return askQuestion(this.question);
   }
 
   toString() {
-    const argText = `[key = ${this.arg}]`.bold();
+    const argText = `[key = ${this.question.arg}]`.bold();
     return `question ${argText}`;
   }
 };

@@ -4,19 +4,28 @@ const Defer = require('../Common/Defer');
 const Args = require('../Common/Args');
 const Logger = require('../Common/Logger');
 
-function askQuestion({arg, question, helpText, choices, defaultAnswer, required}) {
+function askQuestion({ arg, question, helpText, choices, defaultAnswer, required }) {
   const defer = new Defer();
   const rl = readline.createInterface({
     input: process.stdin,
     output: process.stdout
   });
 
-  if (isFunction(defaultAnswer) === true) {
-    defaultAnswer = defaultAnswer();
+
+  if (isFunction(choices) === true) {
+    choices = choices();
   }
 
   if (isFunction(helpText) === true) {
     helpText = helpText();
+  }
+
+  if (isFunction(defaultAnswer) === true) {
+    defaultAnswer = defaultAnswer();
+  }
+
+  if (choices && defaultAnswer === '$last') {
+    defaultAnswer = choices.length;
   }
 
   let defaultAnswerText = defaultAnswer ? `(${defaultAnswer}) `.bold() : '';
@@ -36,10 +45,10 @@ function askQuestion({arg, question, helpText, choices, defaultAnswer, required}
     questionText += `\nAnswer: ${defaultAnswerText}`;
   }
 
-  function ask(question) {
-    question = Logger.makeLogMessage(question);
+  function ask(questionText) {
+    questionText = Logger.makeLogMessage(questionText);
 
-    rl.question(question, answer => {
+    rl.question(questionText, answer => {
       answer = answer || defaultAnswer;
 
       if (required && (!answer || !(answer + '').length)) {
