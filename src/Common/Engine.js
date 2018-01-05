@@ -1,10 +1,8 @@
 const { isFunction, isArray, isString, isUndefined } = require('lodash');
-const TextCommand = require('../Commands/TextCommand');
-const FunctionCommand = require('../Commands/FunctionCommand');
+const { TextCommand, FunctionCommand } = require('../Commands/*');
+const { isPromise, isExecutable } = require('../Utils/*');
 const Defer = require('./Defer');
 const Logger = require('./Logger');
-const isPromise = require('../Utils/isPromise');
-const isExecutable = require('../Utils/isExecutable');
 
 module.exports = class Engine {
   static exec(something) {

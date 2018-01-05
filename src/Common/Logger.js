@@ -28,6 +28,10 @@ class Logger {
   static log() {
     const args = this.makeArgs(arguments);
 
+    if (process.env.TEST) { // don't log anything while in test mode
+      return;
+    }
+
     console.log.apply(console.log, args);
   }
 
@@ -36,7 +40,8 @@ class Logger {
       .makeArgs(arguments)
       .map(arg => `${arg}`.cyan());
 
-    console.log.apply(console.log, args);
+    this.log(args);
+    //console.log.apply(console.log, args);
   }
 
   static error() {
@@ -44,7 +49,8 @@ class Logger {
       .makeArgs(arguments)
       .map(arg => `${arg}`.red().bold());
 
-    console.log.apply(console.log, args);
+    this.log(args);
+    //console.log.apply(console.log, args);
   }
 
   static warn() {
@@ -52,7 +58,8 @@ class Logger {
       .makeArgs(arguments)
       .map(arg => `${arg}`.yellow());
 
-    console.log.apply(console.log, args);
+    this.log(args);
+    //console.log.apply(console.log, args);
   }
 
   static success() {
@@ -60,7 +67,8 @@ class Logger {
       .makeArgs(arguments)
       .map(arg => `${arg}`.green());
 
-    console.log.apply(console.log, args);
+    this.log(args);
+    //console.log.apply(console.log, args);
   }
 
   static title(txt) {

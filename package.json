@@ -8,7 +8,7 @@
     "interactive-batch": "bin/interactive-batch"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "nyc mocha tests"
   },
   "repository": {
     "type": "git",
@@ -23,5 +23,20 @@
   "dependencies": {
     "lodash": "^4.17.4",
     "yargs": "^10.0.3"
-  }
+  },
+  "keywords": [
+    "batch",
+    "interactive",
+    "script"
+  ],
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "istanbul": "^0.4.5",
+    "mocha": "^4.1.0",
+    "nyc": "^11.4.1",
+    "pre-commit": "^1.2.2"
+  },
+  "pre-commit": [
+    "test"
+  ]
 }

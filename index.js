@@ -1,34 +1,47 @@
 'use strict';
 
-const colors = require('./src/Common/Colors');
-const Logger = require('./src/Common/Logger');
-const Args = require('./src/Common/Args');
-const Engine = require('./src/Common/Engine');
+const { Colors, Logger, Args, Engine, Defer, Argv } = require('./src/Common/*');
 const EntryFactory = require('./src/Entry/EntryFactory');
-const Argv = require('./src/Common/Argv');
+const Assert = require('./src/Assert/*');
 
 function run() {
+  const defer = new Defer();
   const argv = Argv.get();
-  const batchFilePath = argv.file;
+  const batchFilePath = `${process.env.PWD}/${argv.file}`;
 
-  const commands = require(`${process.env.PWD}/${batchFilePath}`)({
+  Assert.fileExists(batchFilePath, `Can't load batch file at ${batchFilePath}`);
+
+  const batchFunction = require(batchFilePath);
+
+  Assert.isFunction(batchFunction, 'Batch file must exports a function');
+
+  const commands = batchFunction({
     Args,
     Logger,
     Question: def => EntryFactory.create(EntryFactory.types.QUESTION, def),
     Command: def => EntryFactory.create(EntryFactory.types.COMMAND, def),
   });
 
+  Assert.isArray(commands, 'Batch function must return an array');
+
   Engine.exec(commands)
-    .then(() => Logger.success('\nSUCCESS!'))
-    .catch(ex => Logger.error(ex, `\n${ex.stack}`));
+    .then(() => {
+      Logger.success('\nSUCCESS!');
+      defer.resolve();
+    })
+    .catch(ex => {
+      Logger.error(ex);
+      defer.reject(ex);
+    });
+
+  return defer.promise;
 }
 
 module.exports = function interactiveBatch(argv) {
   try {
-    Argv.set(argv);
-    run();
+    return run();
   } catch (ex) {
-    Logger.error(ex, `\n${ex.stack}`);
-    throw 'Aborting...'.red();
+    Logger.error(ex);
+    throw ex;
   }
 };

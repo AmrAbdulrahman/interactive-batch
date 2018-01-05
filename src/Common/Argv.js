@@ -1,10 +1,6 @@
 module.exports = class Argv {
-  static set(argv) {
-    this.argv = argv;
-  }
-
   static get() {
-    return require('yargs')(this.argv)
+    return require('yargs')(process.argv)
       .option('file', {
         alias: 'f',
         describe: 'The batch file to process',
@@ -26,6 +22,8 @@ module.exports = class Argv {
         describe: 'Run the batch file without actually executing the commands',
         type: 'boolean',
       })
+      .exitProcess(!process.env.TEST)
+      .showHelpOnFail(!process.env.TEST)
       .argv;
   }
 };
